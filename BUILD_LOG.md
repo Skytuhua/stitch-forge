@@ -35,4 +35,24 @@ A running journal of decisions, dead ends, and fixes.
 - Wrote 25 unit tests first. One failure was a mistyped CIEDE2000 reference
   (1.8731 → 1.8645); my implementation matched the canonical value. All 13 other
   Sharma reference pairs pass to 1e-3. **25/25 green**, tsc clean.
-- (continued below as UI/worker/exports land)
+- Built rendering (canvas color + symbol chart), Web Worker, PNG + PDF exports
+  (paginated symbol chart with coordinates + floss key), and the full vanilla-TS
+  UI (drag/drop, sliders, view toggle, zoom, grid, stats, floss legend) with a
+  generated original sample image (sunset) so the tool is demoable with no setup.
+- ESLint flat config: disabled core `no-undef` for TS (tsc already covers it;
+  the rule false-flagged DOM/WebWorker globals).
+
+## Phase 5 — Self-review & QA (see REVIEW.md for full detail)
+- Stood up headless Playwright QA (`scripts/qa.mjs`) + poppler to rasterize and
+  inspect the exported PDF. Screenshot evidence in `review/screenshots/`.
+- Major fix: spinner overlay never hid — `.spinner-overlay{display:grid}`
+  outranked `[hidden]`; added `[hidden]{display:none!important}`.
+- Perf: moved clustering off CIEDE2000 to CIE76 (kept CIEDE2000 for floss
+  matching): 120w 2.9s→0.55s. Fixed a kpp D² double-square bug found en route.
+- jsPDF lazy-loaded on export: initial JS 442kB→37kB.
+- Hardened: transparent image (exports disabled), non-image file (clear error),
+  1×1, maxColors=1, upscaling — unit-tested. 29/29 tests, 12/12 QA, 0 vulns.
+
+## Phase 6 — Docs & packaging
+- README (with screenshots), CHANGELOG, build artifact zip (verified to open
+  from a clean state).

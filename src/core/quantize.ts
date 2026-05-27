@@ -1,8 +1,22 @@
-import { ciede2000, type Lab } from './color';
+import { type Lab } from './color';
 
-// Deterministic k-means clustering in CIELAB space using CIEDE2000 distance.
+// Deterministic k-means clustering in CIELAB space.
+//
+// Clustering uses squared Euclidean distance in LAB (CIE76): it is the standard,
+// fast choice for grouping and is perceptually reasonable in LAB. The expensive,
+// perceptually-exact CIEDE2000 is reserved for the floss-*matching* steps in
+// pattern.ts (centroid -> DMC and cell -> palette) — the choices a user actually
+// sees — keeping the inner clustering loop fast even for large patterns.
+//
 // Determinism (seeded PRNG + k-means++ init) means the same image + settings
 // always produce the same pattern — important for reproducibility and tests.
+
+function dist2(a: Lab, b: Lab): number {
+  const dL = a.L - b.L;
+  const da = a.a - b.a;
+  const db = a.b - b.b;
+  return dL * dL + da * da + db * db;
+}
 
 function mulberry32(seed: number): () => number {
   let a = seed >>> 0;
@@ -51,7 +65,7 @@ export function kMeansLab(points: Lab[], k: number, opts: KMeansOptions = {}): K
       let best = 0;
       let bestD = Infinity;
       for (let c = 0; c < centroids.length; c++) {
-        const d = ciede2000(p, centroids[c]);
+        const d = dist2(p, centroids[c]);
         if (d < bestD) {
           bestD = d;
           best = c;
@@ -115,8 +129,8 @@ function kppInit(points: Lab[], k: number, rng: () => number): Lab[] {
     const last = centroids[centroids.length - 1];
     let total = 0;
     for (let i = 0; i < points.length; i++) {
-      const d = ciede2000(points[i], last);
-      const sq = d * d;
+      // dist2 already returns squared distance — exactly the D^2 weight kpp wants.
+      const sq = dist2(points[i], last);
       if (sq < d2[i]) d2[i] = sq;
       total += d2[i];
     }
@@ -141,7 +155,7 @@ function farthestPoint(points: Lab[], centroids: Lab[], rng: () => number): Lab 
   for (const p of points) {
     let nearest = Infinity;
     for (const c of centroids) {
-      const d = ciede2000(p, c);
+      const d = dist2(p, c);
       if (d < nearest) nearest = d;
     }
     if (nearest > bestD) {

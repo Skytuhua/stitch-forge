@@ -79,6 +79,47 @@ describe('buildPattern', () => {
   });
 });
 
+describe('buildPattern — robustness', () => {
+  it('handles a 1×1 image', () => {
+    const img = makeImage(1, 1, () => [12, 240, 90, 255]);
+    const p = buildPattern(img, { stitchesWide: 1, maxColors: 8, seed: 1 });
+    expect(p.stitchesWide).toBe(1);
+    expect(p.stitchesHigh).toBe(1);
+    expect(p.palette).toHaveLength(1);
+    expect(p.cells[0]).toBe(0);
+  });
+
+  it('handles a fully transparent image without crashing', () => {
+    const img = makeImage(6, 6, () => [123, 45, 67, 0]);
+    const p = buildPattern(img, { stitchesWide: 6, maxColors: 8, seed: 1 });
+    expect(p.palette).toHaveLength(0);
+    expect(p.totalStitches).toBe(0);
+    expect(p.blankCount).toBe(36);
+    expect([...p.cells].every((c) => c === BLANK)).toBe(true);
+  });
+
+  it('clamps maxColors to 1', () => {
+    const img = makeImage(8, 8, (x) => (x < 4 ? [220, 20, 20, 255] : [20, 20, 220, 255]));
+    const p = buildPattern(img, { stitchesWide: 8, maxColors: 1, seed: 1 });
+    expect(p.palette).toHaveLength(1);
+    expect(p.totalStitches).toBe(64);
+  });
+
+  it('upscales when requested width exceeds the source', () => {
+    const img = makeImage(2, 2, (x, y) => {
+      if (x === 0 && y === 0) return [255, 0, 0, 255];
+      if (x === 1 && y === 0) return [0, 255, 0, 255];
+      if (x === 0 && y === 1) return [0, 0, 255, 255];
+      return [255, 255, 0, 255];
+    });
+    const p = buildPattern(img, { stitchesWide: 8, maxColors: 8, seed: 1 });
+    expect(p.stitchesWide).toBe(8);
+    expect(p.stitchesHigh).toBe(8);
+    // Every cell assigned (no blanks, opaque source).
+    expect(p.blankCount).toBe(0);
+  });
+});
+
 describe('physicalSize', () => {
   it('computes inches and cm for a given Aida count', () => {
     const s = physicalSize(28, 14, 14);

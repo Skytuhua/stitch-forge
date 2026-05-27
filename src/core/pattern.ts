@@ -1,10 +1,4 @@
-import {
-  delinearizeChannel,
-  linearizeChannel,
-  rgbToLab,
-  type Lab,
-  type Rgb,
-} from './color';
+import { delinearizeChannel, linearizeChannel, rgbToLab, type Lab, type Rgb } from './color';
 import { DMC_LAB, nearestDmcLab, type DmcColorLab } from './dmc';
 import { kMeansLab } from './quantize';
 import { MAX_SYMBOLS, symbolAt } from './symbols';
@@ -137,12 +131,7 @@ export function buildPattern(image: ImageDataLike, opts: BuildOptions): Pattern 
   };
 }
 
-function downscale(
-  image: ImageDataLike,
-  w: number,
-  h: number,
-  alphaThreshold: number,
-): Cell[] {
+function downscale(image: ImageDataLike, w: number, h: number, alphaThreshold: number): Cell[] {
   const { width: sw, height: sh, data } = image;
   const cells: Cell[] = new Array(w * h);
 

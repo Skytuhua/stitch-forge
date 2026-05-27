@@ -1,6 +1,7 @@
 node_modules/
 dist/
 dist-zip/
+stitch-forge-*.zip
 *.local
 .env
 .env.*
