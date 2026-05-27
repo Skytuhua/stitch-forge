@@ -1,0 +1,18 @@
+// Chart symbols, ordered most-distinct first so small palettes get the clearest
+// glyphs. Restricted to Latin-1 printable characters so they render identically
+// on the HTML canvas and in the jsPDF built-in fonts. Ambiguous glyphs
+// (I/l/1, O/0) are deliberately omitted.
+export const SYMBOLS: readonly string[] = [
+  'X', '+', 'O', '=', '/', '\\', '<', '>', '*', '#', '@', '%', '&', '$', '?', '!',
+  '~', '^', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'K', 'L', 'M', 'N', 'P', 'Q',
+  'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z', '2', '3', '4', '5', '6', '7', '8', '9',
+  'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't',
+  'u', 'v', 'w', 'y', 'z', '{', '}', '[', ']', '(', ')', ';', ':', '.', '-',
+];
+
+/** Maximum number of colors we can assign unique symbols to. */
+export const MAX_SYMBOLS = SYMBOLS.length;
+
+export function symbolAt(index: number): string {
+  return SYMBOLS[index] ?? '?';
+}

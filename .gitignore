@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dist-zip/
+*.local
+.env
+.env.*
+.DS_Store
+review/screenshots/*.tmp.png
+*.log
+coverage/

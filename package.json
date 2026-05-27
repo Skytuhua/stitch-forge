@@ -1,0 +1,47 @@
+{
+  "name": "stitch-forge",
+  "version": "1.0.0",
+  "description": "Turn any photo into a cross-stitch pattern with accurate DMC floss colors — 100% in your browser, nothing uploaded.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Skytuhua",
+  "homepage": "https://skytuhua.github.io/stitch-forge/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Skytuhua/stitch-forge"
+  },
+  "keywords": [
+    "cross-stitch",
+    "embroidery",
+    "dmc",
+    "floss",
+    "pattern",
+    "pixel-art",
+    "image-to-pattern",
+    "craft"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 4173",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint . && prettier --check \"src/**/*.{ts,css}\" \"test/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.{ts,css}\" \"test/**/*.ts\"",
+    "build:dmc": "node scripts/build-dmc.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "eslint": "^9.17.0",
+    "jsdom": "^25.0.1",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "vite": "^8.0.14",
+    "vitest": "^4.1.7"
+  },
+  "dependencies": {
+    "jspdf": "^4.2.1"
+  }
+}
