@@ -10,6 +10,8 @@ export interface RenderOptions {
   showMajorGrid: boolean;
   /** Color drawn for BLANK (unstitched) cells. */
   blankColor?: string;
+  /** When set, dims all cells except this palette index (and rings them). */
+  highlight?: number | null;
 }
 
 const MINOR_GRID = '#0000001f';
@@ -71,7 +73,40 @@ export function renderPattern(
     }
   }
 
+  if (opts.highlight != null) {
+    drawHighlight(ctx, p, opts);
+  }
+
   drawGrid(ctx, p, opts, w, h);
+}
+
+/** Dim everything, then repaint the highlighted floss at full strength. */
+function drawHighlight(ctx: CanvasRenderingContext2D, p: Pattern, opts: RenderOptions): void {
+  const { cellSize } = opts;
+  const target = opts.highlight;
+  const { w, h } = patternPixelSize(p, cellSize);
+
+  ctx.fillStyle = 'rgba(250,248,244,0.8)';
+  ctx.fillRect(0, 0, w, h);
+
+  for (let y = 0; y < p.stitchesHigh; y++) {
+    for (let x = 0; x < p.stitchesWide; x++) {
+      const idx = p.cells[y * p.stitchesWide + x];
+      if (idx !== target) continue;
+      const dmc = p.palette[idx].dmc;
+      const px = x * cellSize;
+      const py = y * cellSize;
+      ctx.fillStyle = `rgb(${dmc.r},${dmc.g},${dmc.b})`;
+      ctx.fillRect(px, py, cellSize, cellSize);
+      if (opts.mode === 'symbol' && cellSize >= 9) {
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = `${Math.round(cellSize * 0.72)}px ui-monospace, "Courier New", monospace`;
+        ctx.fillStyle = readableInkOn(dmc);
+        ctx.fillText(p.palette[idx].symbol, px + cellSize / 2, py + cellSize / 2 + cellSize * 0.04);
+      }
+    }
+  }
 }
 
 function drawGrid(

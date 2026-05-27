@@ -42,19 +42,30 @@ StitchForge is the free option done properly:
   blank (unstitched) cells.
 - Controls for **pattern width** (in stitches), **max colors** (up to 80), and
   **fabric Aida count** (11/14/16/18 or custom).
-- **Color** preview and **Symbol** chart views, with adjustable zoom and
-  stitch / 10-count grid overlays.
+- **Image adjustments** — brightness, contrast, and saturation, applied before
+  quantization so photos can be tuned to stitch well.
+- **Color** preview and **Symbol** chart views, with adjustable zoom
+  (−/Fit/+ and a slider) and stitch / 10-count grid overlays.
+- **Click any floss to find it** — highlights every cell of that color on the
+  chart and dims the rest.
+- **Hover readout** — shows the stitch's row/column and its DMC floss as you
+  move the cursor over the chart.
 - Live **floss list** sorted by usage, **finished-size** in inches and cm, and
   total stitch / color counts.
-- **PDF export** — cover page with stats and floss key, then a paginated symbol
-  chart with row/column coordinates. **PNG export** of the preview.
-- Deterministic: the same image + settings always produce the same pattern.
+- **PDF export** (cover + floss key + paginated symbol chart with coordinates),
+  **PNG export** of the preview, and **CSV** floss/shopping-list export.
+- Remembers your settings between visits; deterministic (same image + settings
+  ⇒ same pattern).
 
 ## Screenshots
 
-| Symbol chart | Printable PDF |
+| Symbol chart | Find a floss on the chart |
 |---|---|
-| ![Symbols](review/screenshots/03-sample-symbols.png) | ![PDF cover](review/screenshots/pdf-cover.png) |
+| ![Symbols](review/screenshots/03-sample-symbols.png) | ![Highlight a color](review/screenshots/06-highlight.png) |
+
+| Printable PDF | |
+|---|---|
+| ![PDF cover](review/screenshots/pdf-cover.png) | |
 
 The exported PDF chart, ready to stitch from:
 

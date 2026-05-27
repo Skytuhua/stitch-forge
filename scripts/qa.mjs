@@ -1,7 +1,7 @@
 // Headless functional + visual QA: drives the built app, screenshots each
 // state, exercises exports, and fails loudly on console errors.
 import { chromium } from 'playwright';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 
 const BASE = process.env.QA_URL ?? 'http://localhost:4173/';
@@ -87,6 +87,51 @@ check(size2?.startsWith('140 ×'), `pattern regenerated at new width (got "${siz
 const colors2 = Number(await page.locator('#statColors').textContent());
 check(colors2 >= 2 && colors2 <= 40, `color count within requested bound (${colors2})`);
 
+// Zoom buttons.
+const z0 = Number(await page.locator('#zoomVal').textContent());
+await page.click('#zoomIn');
+const z1 = Number(await page.locator('#zoomVal').textContent());
+check(z1 > z0, `zoom-in increases zoom (${z0} -> ${z1})`);
+
+// Hover readout reports the floss under the cursor. Fit first so the whole
+// canvas is on-screen, then move the mouse over its center.
+await page.click('#zoomFit');
+await page.waitForTimeout(150);
+const box = await page.locator('#canvas').boundingBox();
+await page.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.5);
+await page.waitForTimeout(150);
+const readout = await page.locator('#hoverReadout').textContent();
+check(/R\d+ · C\d+/.test(readout ?? ''), `hover readout shows cell (${readout})`);
+
+// Click a floss in the legend to highlight it on the chart.
+await page.locator('.legend-row').first().click();
+await page.waitForTimeout(150);
+const chipVisible = await page.locator('#clearHighlight').isVisible();
+check(chipVisible, 'highlight chip appears after clicking a floss');
+await shot(page, '06-highlight.png');
+await page.locator('#clearHighlight').click();
+await page.waitForTimeout(100);
+check(!(await page.locator('#clearHighlight').isVisible()), 'highlight cleared via chip');
+
+// Image adjustments regenerate and flag the badge.
+await page.locator('#adjustDetails > summary').click();
+await setRange('#brightnessRange', 35);
+await page.waitForFunction(() => document.getElementById('spinner')?.hidden === true, {
+  timeout: 15000,
+});
+await page.waitForTimeout(250);
+check(await page.locator('#adjustBadge').isVisible(), 'adjustments badge shows when active');
+await page.click('#resetAdjust');
+await page.waitForTimeout(300);
+check(!(await page.locator('#adjustBadge').isVisible()), 'adjustments badge clears on reset');
+
+// CSV floss list export.
+const csvDl = page.waitForEvent('download', { timeout: 15000 });
+await page.click('#exportCsv');
+const csv = await csvDl;
+await csv.saveAs(join(OUT, 'export-floss.csv'));
+check(csv.suggestedFilename().endsWith('.csv'), `CSV download fired (${csv.suggestedFilename()})`);
+
 // Custom fabric count updates finished size.
 const sizeBefore = await page.locator('#statPhysical').textContent();
 await page.selectOption('#fabric', 'custom');
@@ -125,6 +170,7 @@ await page.setInputFiles('#file', txt);
 await page.waitForTimeout(300);
 const status = await page.locator('#status').textContent();
 check(/not an image/i.test(status ?? ''), `non-image file rejected (status: "${status}")`);
+rmSync(txt, { force: true });
 
 check(errors.length === 0, `no console errors (saw ${errors.length})`);
 if (errors.length) console.log(errors.join('\n'));

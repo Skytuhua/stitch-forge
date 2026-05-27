@@ -63,10 +63,26 @@ A 2× screenshot looked tight. Measured directly: at 420 px,
 `document.body.scrollWidth === clientWidth === 420` with zero overflowing
 elements. No fix needed.
 
-## Final state
+## v1.1.0 review pass — additional findings & features
 
-- Unit tests: **29/29 pass**. Type-check clean. ESLint + Prettier clean.
-- Headless QA: **12/12 checks pass**, **0 console errors**.
+- **(Bug, UX) Zoom reset on every change.** `autoFitZoom()` ran after each
+  regeneration and on window resize, throwing away the zoom the user had set.
+  Fixed: auto-fit only fires when a *new image* is loaded (`pendingAutoFit`).
+  Added explicit −/Fit/+ buttons so refitting is a deliberate action.
+- **(Cleanup) Redundant legend badge.** Each floss row printed a literal "DMC"
+  badge; removed for a cleaner two-line code/name layout.
+- **Features added** (each unit-tested and/or covered by headless QA):
+  image brightness/contrast/saturation (`core/adjust.ts`, 7 tests),
+  click-a-floss highlight, hover readout, CSV export (`export/csv.ts`, 2 tests),
+  zoom buttons, and settings persistence.
+- Re-verified end to end: **38/38** unit tests, **19/19** QA checks, **0**
+  console errors, lint/type-check clean, `npm audit` 0 vulnerabilities. New
+  evidence: `06-highlight.png` (highlight feature) plus refreshed 01–05.
+
+## Final state (v1.1.0)
+
+- Unit tests: **38/38 pass**. Type-check clean. ESLint + Prettier clean.
+- Headless QA: **19/19 checks pass**, **0 console errors**.
 - Production build green; `npm audit`: **0 vulnerabilities**.
 - "Would a real user keep this?" — a real photograph produced a recognizable,
   well-matched 24-color chart with a sensible floss list and a stitchable PDF.

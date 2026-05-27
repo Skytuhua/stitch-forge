@@ -1,6 +1,6 @@
 {
   "name": "stitch-forge",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Turn any photo into a cross-stitch pattern with accurate DMC floss colors — 100% in your browser, nothing uploaded.",
   "type": "module",
   "license": "MIT",

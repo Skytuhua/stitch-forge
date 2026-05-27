@@ -4,6 +4,35 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/), and this project adheres to
 [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] — 2026-05-27
+
+### Added
+
+- **Image adjustments** — brightness, contrast, and saturation sliders applied
+  before quantization, so photos can be tuned to stitch well. Collapsible, with
+  a reset and an "on" badge.
+- **Click a floss to find it** — clicking a color in the floss list highlights
+  every cell of that color on the chart (dimming the rest), with a clearable
+  status chip.
+- **Hover readout** — moving the cursor over the chart shows the stitch's
+  row/column and its DMC floss code, name, and symbol.
+- **CSV floss list export** — a shopping list (symbol, DMC, name, hex, stitch
+  count, skein estimate) for spreadsheets.
+- **Zoom −/Fit/+ buttons** alongside the slider.
+- **Settings persistence** — width, colors, fabric, view, grids, and
+  adjustments are remembered between visits (localStorage).
+
+### Fixed
+
+- Zoom no longer resets when changing colors/width or resizing the window; the
+  chart auto-fits only when a new image is loaded.
+- Cleaned up the floss-list row layout (removed a redundant "DMC" badge).
+
+### Changed
+
+- Refreshed UI: numbered steps, clearer controls, polished legend and stage
+  toolbar, and accessibility touches (focus styles, ARIA on toggles).
+
 ## [1.0.0] — 2026-05-27
 
 First public release.
@@ -27,4 +56,5 @@ First public release.
   and settings.
 - Built-in generated sample image for zero-setup demos.
 
+[1.1.0]: https://github.com/Skytuhua/stitch-forge/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Skytuhua/stitch-forge/releases/tag/v1.0.0

@@ -56,3 +56,16 @@ A running journal of decisions, dead ends, and fixes.
 ## Phase 6 — Docs & packaging
 - README (with screenshots), CHANGELOG, build artifact zip (verified to open
   from a clean state).
+
+## v1.1.0 — Review pass + features
+- Full re-review. Fixed a real UX bug: `autoFitZoom()` ran on every regen and on
+  resize, silently resetting the user's chosen zoom. Now auto-fits only when a
+  new image loads (`pendingAutoFit`); added explicit −/Fit/+ buttons.
+- Removed a redundant per-row "DMC" badge in the legend.
+- New features (all unit-/QA-tested): image **brightness/contrast/saturation**
+  (`core/adjust.ts`), **click-a-floss-to-highlight** on the chart, **hover
+  readout** of the stitch under the cursor, **CSV** floss-list export, **zoom
+  buttons**, and **localStorage settings persistence**.
+- UI refresh (numbered steps, GitHub icon, collapsible adjustments, stage
+  toolbar, polished legend, focus styles).
+- 38 unit tests pass; QA 19/19 with 0 console errors; lint/tsc clean; 0 vulns.

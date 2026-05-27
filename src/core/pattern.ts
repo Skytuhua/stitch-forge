@@ -2,6 +2,7 @@ import { delinearizeChannel, linearizeChannel, rgbToLab, type Lab, type Rgb } fr
 import { DMC_LAB, nearestDmcLab, type DmcColorLab } from './dmc';
 import { kMeansLab } from './quantize';
 import { MAX_SYMBOLS, symbolAt } from './symbols';
+import { adjustImage, isIdentity, type Adjustments } from './adjust';
 
 /** Upper bound on colors, capped by the number of distinct chart symbols. */
 export const MAX_COLORS = MAX_SYMBOLS;
@@ -45,6 +46,8 @@ export interface BuildOptions {
   seed?: number;
   /** alpha below this (0..1) marks a cell as BLANK. Default 0.5. */
   alphaThreshold?: number;
+  /** Optional brightness/contrast/saturation applied before quantization. */
+  adjustments?: Adjustments;
 }
 
 interface Cell {
@@ -60,7 +63,11 @@ export function buildPattern(image: ImageDataLike, opts: BuildOptions): Pattern 
   const maxColors = clampInt(opts.maxColors, 1, MAX_COLORS);
   const alphaThreshold = opts.alphaThreshold ?? 0.5;
 
-  const cells = downscale(image, stitchesWide, stitchesHigh, alphaThreshold);
+  const src =
+    opts.adjustments && !isIdentity(opts.adjustments)
+      ? adjustImage(image, opts.adjustments)
+      : image;
+  const cells = downscale(src, stitchesWide, stitchesHigh, alphaThreshold);
 
   // Cluster only the non-blank cells.
   const labs: Lab[] = [];
